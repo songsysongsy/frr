@@ -1302,8 +1302,13 @@ DEFUN (show_ip_route_prefix,
 		return CMD_SUCCESS;
 
 	rn = route_node_match(table, (struct prefix *)&p);
-	if (!rn || rn->p.prefixlen != p.prefixlen) {
+	if (!rn) {
 		vty_out(vty, "%% Network not in table\n");
+		return CMD_WARNING;
+	}
+	if (rn->p.prefixlen != p.prefixlen) {
+		vty_out(vty, "%% Network not in table\n");
+		route_unlock_node(rn);
 		return CMD_WARNING;
 	}
 
@@ -1841,8 +1846,13 @@ DEFUN (show_ipv6_route_prefix,
 		return CMD_SUCCESS;
 
 	rn = route_node_match(table, (struct prefix *)&p);
-	if (!rn || rn->p.prefixlen != p.prefixlen) {
+	if (!rn) {
 		vty_out(vty, "%% Network not in table\n");
+		return CMD_WARNING;
+	}
+	if (rn->p.prefixlen != p.prefixlen) {
+		vty_out(vty, "%% Network not in table\n");
+		route_unlock_node(rn);
 		return CMD_WARNING;
 	}
 
